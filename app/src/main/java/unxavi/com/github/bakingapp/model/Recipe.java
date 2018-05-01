@@ -24,4 +24,7 @@ public class Recipe {
     @SerializedName("image")
     private String image;
 
+    public String getName() {
+        return name;
+    }
 }
