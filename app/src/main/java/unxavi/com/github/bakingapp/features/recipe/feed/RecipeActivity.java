@@ -1,5 +1,6 @@
 package unxavi.com.github.bakingapp.features.recipe.feed;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import unxavi.com.github.bakingapp.R;
+import unxavi.com.github.bakingapp.features.recipe.detail.StepListActivity;
 import unxavi.com.github.bakingapp.model.Recipe;
 
 public class RecipeActivity extends MvpActivity<RecipeView, RecipePresenter> implements RecipeView, RecipeAdapter.RecipeAdapterOnClickHandler {
@@ -41,7 +43,7 @@ public class RecipeActivity extends MvpActivity<RecipeView, RecipePresenter> imp
 
     @Override
     public void showLoading() {
-
+        // TODO: 5/6/18
     }
 
     @Override
@@ -55,16 +57,18 @@ public class RecipeActivity extends MvpActivity<RecipeView, RecipePresenter> imp
 
     @Override
     public void showInternetError() {
-
+        // TODO: 5/6/18
     }
 
     @Override
     public void showServerError() {
-
+        // TODO: 5/6/18
     }
 
     @Override
     public void onRecipeClick(Recipe recipe) {
-
+        Intent intent = new Intent(this, StepListActivity.class);
+        intent.putExtra(Recipe.RECIPE_KEY, recipe);
+        startActivity(intent);
     }
 }

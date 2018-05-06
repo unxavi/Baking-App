@@ -18,6 +18,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".features.recipe.detail.StepListActivity"
+            android:label="@string/title_step_list"
+            android:parentActivityName=".features.recipe.feed.RecipeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="unxavi.com.github.bakingapp.features.recipe.feed.RecipeActivity" />
+        </activity>
+        <activity
+            android:name=".features.recipe.detail.StepDetailActivity"
+            android:label="@string/title_step_detail"
+            android:parentActivityName=".features.recipe.detail.StepListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="unxavi.com.github.bakingapp.features.recipe.detail.StepListActivity" />
+        </activity>
     </application>
 
 </manifest>
