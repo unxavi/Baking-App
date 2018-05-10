@@ -9,11 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import unxavi.com.github.bakingapp.R;
+import unxavi.com.github.bakingapp.model.Ingredient;
 import unxavi.com.github.bakingapp.model.Recipe;
 import unxavi.com.github.bakingapp.model.Step;
 
@@ -32,6 +35,9 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
     @BindView(R.id.step_list)
     RecyclerView stepList;
+
+    @BindView(R.id.ingredients_tv)
+    TextView ingredientsTv;
 
     Recipe recipe;
 
@@ -74,6 +80,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         }
 
         setupRecyclerView(stepList);
+        showIngredients(recipe);
     }
 
     private void closeOnError() {
@@ -102,6 +109,17 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(stepsAdapter);
+    }
+
+    private void showIngredients(Recipe recipe) {
+        String ingredients = "";
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            if(!TextUtils.isEmpty(ingredients)){
+                ingredients += '\n';
+            }
+            ingredients += String.format("\u25CF %s", ingredient.getIngredient());
+        }
+        ingredientsTv.setText(ingredients);
     }
 
     @Override
