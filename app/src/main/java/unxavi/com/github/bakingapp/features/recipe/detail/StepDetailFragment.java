@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,8 +25,11 @@ import unxavi.com.github.bakingapp.model.Step;
  */
 public class StepDetailFragment extends Fragment {
 
-    @BindView(R.id.step_detail)
-    TextView stepDetail;
+    @BindView(R.id.videoView)
+    VideoView videoView;
+
+    @BindView(R.id.step_description)
+    TextView stepDescription;
 
     Unbinder unbinder;
 
@@ -61,11 +65,11 @@ public class StepDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
-        // Show the recipe description content as text in a TextView.
-        if (step != null) {
-            ((TextView) rootView.findViewById(R.id.step_detail)).setText(step.getDescription());
-        }
         unbinder = ButterKnife.bind(this, rootView);
+
+        String description = step.getDescription();
+        stepDescription.setText(description);
+
         return rootView;
     }
 
