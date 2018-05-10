@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -111,6 +112,8 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         StepsAdapter stepsAdapter = new StepsAdapter(recipe.getSteps(), this);
+        DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(stepsAdapter);
     }
 
