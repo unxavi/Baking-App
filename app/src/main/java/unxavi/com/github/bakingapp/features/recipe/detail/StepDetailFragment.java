@@ -3,8 +3,8 @@ package unxavi.com.github.bakingapp.features.recipe.detail;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +47,12 @@ public class StepDetailFragment extends Fragment {
             // arguments.
             step = getArguments().getParcelable(Step.STEP_KEY);
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(step.getShortDescription());
+            Toolbar toolbar = null;
+            if (activity != null) {
+                toolbar = activity.findViewById(R.id.toolbar);
+            }
+            if (toolbar != null) {
+                toolbar.setTitle(step.getShortDescription());
             }
         }
     }
