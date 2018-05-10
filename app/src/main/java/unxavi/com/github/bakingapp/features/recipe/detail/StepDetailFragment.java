@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -38,6 +39,7 @@ import unxavi.com.github.bakingapp.model.Step;
 public class StepDetailFragment extends Fragment {
 
     public static final String BAKING_APP_USER_AGENT = "BakingAPPUserAgent";
+    public static final String VIDEO_POSITION_KEY = "VIDEO_POSITION";
     @BindView(R.id.playerView)
     PlayerView playerView;
 
@@ -48,6 +50,7 @@ public class StepDetailFragment extends Fragment {
 
     private Step step;
     private SimpleExoPlayer simpleExoPlayer;
+    private long videoPosition;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -86,6 +89,21 @@ public class StepDetailFragment extends Fragment {
         return rootView;
     }
 
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putLong(VIDEO_POSITION_KEY, videoPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            videoPosition = savedInstanceState.getLong(VIDEO_POSITION_KEY);
+        }
+    }
+
     private void renderUI() {
         stepDescription.setText(step.getDescription());
     }
@@ -105,10 +123,9 @@ public class StepDetailFragment extends Fragment {
                 String userAgent = Util.getUserAgent(getContext(), BAKING_APP_USER_AGENT);
                 ExtractorMediaSource.Factory factory = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(), userAgent));
                 ExtractorMediaSource mediaSource = factory.createMediaSource(mediaUri);
-//            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-//                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
                 simpleExoPlayer.prepare(mediaSource);
                 simpleExoPlayer.setPlayWhenReady(true);
+                simpleExoPlayer.seekTo(videoPosition);
             }
         }
     }
@@ -116,6 +133,9 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        if (simpleExoPlayer != null) {
+            videoPosition = simpleExoPlayer.getContentPosition();
+        }
         releasePlayer();
     }
 
@@ -132,9 +152,11 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void releasePlayer() {
-        simpleExoPlayer.stop();
-        simpleExoPlayer.release();
-        simpleExoPlayer = null;
+        if (simpleExoPlayer != null) {
+            simpleExoPlayer.stop();
+            simpleExoPlayer.release();
+            simpleExoPlayer = null;
+        }
 
     }
 }
