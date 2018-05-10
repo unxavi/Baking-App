@@ -3,7 +3,6 @@ package unxavi.com.github.bakingapp.features.recipe.detail;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -33,9 +32,6 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
     @BindView(R.id.step_list)
     RecyclerView stepList;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
 
     Recipe recipe;
 
