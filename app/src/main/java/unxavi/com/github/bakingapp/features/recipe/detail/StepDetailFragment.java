@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -123,6 +124,7 @@ public class StepDetailFragment extends Fragment {
                 String userAgent = Util.getUserAgent(getContext(), BAKING_APP_USER_AGENT);
                 ExtractorMediaSource.Factory factory = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(), userAgent));
                 ExtractorMediaSource mediaSource = factory.createMediaSource(mediaUri);
+                simpleExoPlayer.setRepeatMode(Player.REPEAT_MODE_ALL);
                 simpleExoPlayer.prepare(mediaSource);
                 simpleExoPlayer.setPlayWhenReady(true);
                 simpleExoPlayer.seekTo(videoPosition);
