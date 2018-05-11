@@ -3,6 +3,7 @@ package unxavi.com.github.bakingapp.features.recipe.detail;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -29,6 +31,10 @@ import unxavi.com.github.bakingapp.model.Step;
  * item details side-by-side using two vertical panes.
  */
 public class StepListActivity extends AppCompatActivity implements StepsAdapter.StepsAdapterListener {
+
+    @Nullable
+    @BindView(R.id.step_detail_container)
+    FrameLayout stepDetailContainer;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -71,7 +77,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             actionBar.setTitle(recipe.getName());
         }
 
-        if (findViewById(R.id.step_detail_container) != null) {
+        if (stepDetailContainer != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
@@ -114,7 +120,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
     private void showIngredients(Recipe recipe) {
         String ingredients = "";
         for (Ingredient ingredient : recipe.getIngredients()) {
-            if(!TextUtils.isEmpty(ingredients)){
+            if (!TextUtils.isEmpty(ingredients)) {
                 ingredients += '\n';
             }
             ingredients += String.format("\u25CF %s", ingredient.getIngredient());
