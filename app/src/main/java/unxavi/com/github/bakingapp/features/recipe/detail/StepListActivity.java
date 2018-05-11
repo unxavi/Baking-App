@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -18,9 +17,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import unxavi.com.github.bakingapp.R;
-import unxavi.com.github.bakingapp.model.Ingredient;
 import unxavi.com.github.bakingapp.model.Recipe;
 import unxavi.com.github.bakingapp.model.Step;
+import unxavi.com.github.bakingapp.utils.Utility;
 
 /**
  * An activity representing a list of Steps. This activity
@@ -118,14 +117,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
     }
 
     private void showIngredients(Recipe recipe) {
-        String ingredients = "";
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            if (!TextUtils.isEmpty(ingredients)) {
-                ingredients += '\n';
-            }
-            ingredients += String.format("\u25CF %s", ingredient.getIngredient());
-        }
-        ingredientsTv.setText(ingredients);
+        ingredientsTv.setText(Utility.formatIngredients(recipe));
     }
 
     @Override
