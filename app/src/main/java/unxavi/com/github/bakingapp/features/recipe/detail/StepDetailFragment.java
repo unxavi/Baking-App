@@ -50,9 +50,11 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     public static final String BAKING_APP_USER_AGENT = "BakingAPPUserAgent";
     public static final String VIDEO_POSITION_KEY = "VIDEO_POSITION";
     private static final String TAG = "StepDetailFragment";
+
     @BindView(R.id.playerView)
     PlayerView playerView;
 
+    @Nullable
     @BindView(R.id.step_description)
     TextView stepDescription;
 
@@ -96,7 +98,7 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        renderUI();
+        renderDescription();
 
         // Initialize the Media Session.
         initializeMediaSession();
@@ -151,8 +153,10 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         }
     }
 
-    private void renderUI() {
-        stepDescription.setText(step.getDescription());
+    private void renderDescription() {
+        if (stepDescription != null) {
+            stepDescription.setText(step.getDescription());
+        }
     }
 
     private void initPlayer() {

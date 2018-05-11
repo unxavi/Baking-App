@@ -1,12 +1,16 @@
 package unxavi.com.github.bakingapp.features.recipe.detail;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +33,7 @@ public class StepDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        hideStatusBarIfLandscape();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
         ButterKnife.bind(this);
@@ -39,6 +44,7 @@ public class StepDetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        hideToolbarIfLandscape();
 
         Intent intent = getIntent();
         recipe = intent.getParcelableExtra(Recipe.RECIPE_KEY);
@@ -68,6 +74,21 @@ public class StepDetailActivity extends AppCompatActivity {
             }
         } else {
             closeOnError();
+        }
+    }
+
+    private void hideToolbarIfLandscape() {
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            detailToolbar.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideStatusBarIfLandscape() {
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         }
     }
 
