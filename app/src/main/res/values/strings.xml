@@ -3,4 +3,6 @@
     <string name="title_step_list">Steps</string>
     <string name="title_step_detail">Step Detail</string>
     <string name="servings">Servings</string>
+    <string name="step_image_content_description">Step image</string>
+    <string name="recipe_picture_content_description">Recipe picture</string>
 </resources>

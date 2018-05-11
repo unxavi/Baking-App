@@ -22,6 +22,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/step_image_content_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playerView"
+            app:srcCompat="@drawable/ic_recipe_silverwear" />
+
         <TextView
             android:id="@+id/step_description"
             android:layout_width="match_parent"
@@ -31,7 +43,7 @@
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerView"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
             tools:text="@tools:sample/lorem/random" />
 
     </android.support.constraint.ConstraintLayout>

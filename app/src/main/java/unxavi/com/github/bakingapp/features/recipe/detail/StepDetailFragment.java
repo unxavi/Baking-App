@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -32,6 +33,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +59,11 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     @Nullable
     @BindView(R.id.step_description)
     TextView stepDescription;
+
+    @Nullable
+    @BindView(R.id.imageView)
+    ImageView imageView;
+
 
     Unbinder unbinder;
 
@@ -98,7 +105,7 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        renderDescription();
+        renderUI();
 
         // Initialize the Media Session.
         initializeMediaSession();
@@ -153,9 +160,12 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         }
     }
 
-    private void renderDescription() {
+    private void renderUI() {
         if (stepDescription != null) {
             stepDescription.setText(step.getDescription());
+        }
+        if (imageView != null && !TextUtils.isEmpty(step.getThumbnailURL())) {
+            Picasso.get().load(step.getThumbnailURL()).placeholder(R.drawable.ic_recipe_silverwear).error(R.drawable.ic_recipe_silverwear).into(imageView);
         }
     }
 
