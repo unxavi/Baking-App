@@ -3,12 +3,17 @@ package unxavi.com.github.bakingapp.features.recipe.feed;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
+import java.util.Locale;
 
 import unxavi.com.github.bakingapp.R;
 import unxavi.com.github.bakingapp.model.Recipe;
@@ -62,6 +67,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Recipe recipe = data.get(position);
         holder.recipeTV.setText(recipe.getName());
+        if(!TextUtils.isEmpty(recipe.getImage())){
+            Picasso.get().load(recipe.getImage()).placeholder(R.drawable.ic_recipe_silverwear).error(R.drawable.ic_recipe_silverwear).into(holder.imageView);
+        }
+        String servings = String.format(Locale.getDefault(), "%d %s", recipe.getServings(), holder.servingsTV.getContext().getString(R.string.servings));
+        holder.servingsTV.setText(servings);
     }
 
     @Override
@@ -77,10 +87,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView recipeTV;
+        ImageView imageView;
+        TextView servingsTV;
 
         ViewHolder(View itemView) {
             super(itemView);
             recipeTV = itemView.findViewById(R.id.recipe_tv);
+            imageView = itemView.findViewById(R.id.imageView);
+            servingsTV = itemView.findViewById(R.id.servings_tv);
             itemView.setOnClickListener(this);
         }
 

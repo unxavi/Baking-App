@@ -13,7 +13,7 @@ public class Recipe implements Parcelable {
     public static final String RECIPE_KEY = "RECIPE_KEY";
 
     @SerializedName("id")
-    private Long id;
+    private int id;
 
     @SerializedName("name")
     private String name;
@@ -25,7 +25,7 @@ public class Recipe implements Parcelable {
     private List<Step> steps = null;
 
     @SerializedName("servings")
-    private Long servings;
+    private int servings;
 
     @SerializedName("image")
     private String image;
@@ -40,6 +40,14 @@ public class Recipe implements Parcelable {
 
     public List<Step> getSteps() {
         return steps;
+    }
+
+    public int getServings() {
+        return servings;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     @Override
@@ -61,13 +69,13 @@ public class Recipe implements Parcelable {
     }
 
     protected Recipe(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.id = (int) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.ingredients = new ArrayList<Ingredient>();
         in.readList(this.ingredients, Ingredient.class.getClassLoader());
         this.steps = new ArrayList<Step>();
         in.readList(this.steps, Step.class.getClassLoader());
-        this.servings = (Long) in.readValue(Long.class.getClassLoader());
+        this.servings = (int) in.readValue(Long.class.getClassLoader());
         this.image = in.readString();
     }
 
