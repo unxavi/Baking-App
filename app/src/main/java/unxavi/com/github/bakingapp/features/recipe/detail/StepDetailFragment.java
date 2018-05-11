@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,12 +17,18 @@ import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
@@ -37,10 +45,11 @@ import unxavi.com.github.bakingapp.model.Step;
  * in two-pane mode (on tablets) or a {@link StepDetailActivity}
  * on handsets.
  */
-public class StepDetailFragment extends Fragment {
+public class StepDetailFragment extends Fragment implements ExoPlayer.EventListener {
 
     public static final String BAKING_APP_USER_AGENT = "BakingAPPUserAgent";
     public static final String VIDEO_POSITION_KEY = "VIDEO_POSITION";
+    private static final String TAG = "StepDetailFragment";
     @BindView(R.id.playerView)
     PlayerView playerView;
 
@@ -52,6 +61,8 @@ public class StepDetailFragment extends Fragment {
     private Step step;
     private SimpleExoPlayer simpleExoPlayer;
     private long videoPosition;
+    private MediaSessionCompat mediaSessionCompat;
+    private PlaybackStateCompat.Builder stateBuilder;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -87,7 +98,42 @@ public class StepDetailFragment extends Fragment {
 
         renderUI();
 
+        // Initialize the Media Session.
+        initializeMediaSession();
+
         return rootView;
+    }
+
+    private void initializeMediaSession() {
+        if (getContext() != null) {
+            // Create a MediaSessionCompat.
+            mediaSessionCompat = new MediaSessionCompat(getContext(), TAG);
+
+            // Enable callbacks from MediaButtons and TransportControls.
+            mediaSessionCompat.setFlags(
+                    MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                            MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+            // Do not let MediaButtons restart the player when the app is not visible.
+            mediaSessionCompat.setMediaButtonReceiver(null);
+
+            // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
+            stateBuilder = new PlaybackStateCompat.Builder()
+                    .setActions(
+                            PlaybackStateCompat.ACTION_PLAY |
+                                    PlaybackStateCompat.ACTION_PAUSE |
+                                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                                    PlaybackStateCompat.ACTION_PLAY_PAUSE);
+
+            mediaSessionCompat.setPlaybackState(stateBuilder.build());
+
+
+            // MySessionCallback has methods that handle callbacks from a media controller.
+            mediaSessionCompat.setCallback(new MySessionCallback());
+
+            // Start the Media Session since the activity is active.
+            mediaSessionCompat.setActive(true);
+        }
     }
 
 
@@ -124,6 +170,7 @@ public class StepDetailFragment extends Fragment {
                 String userAgent = Util.getUserAgent(getContext(), BAKING_APP_USER_AGENT);
                 ExtractorMediaSource.Factory factory = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(), userAgent));
                 ExtractorMediaSource mediaSource = factory.createMediaSource(mediaUri);
+                simpleExoPlayer.addListener(this);
                 simpleExoPlayer.setRepeatMode(Player.REPEAT_MODE_ALL);
                 simpleExoPlayer.prepare(mediaSource);
                 simpleExoPlayer.setPlayWhenReady(true);
@@ -133,8 +180,75 @@ public class StepDetailFragment extends Fragment {
     }
 
     @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    /**
+     * Method that is called when the ExoPlayer state changes. Used to update the MediaSession
+     * PlayBackState to keep in sync, and post the media notification.
+     * @param playWhenReady true if ExoPlayer is playing, false if it's paused.
+     * @param playbackState int describing the state of ExoPlayer. Can be STATE_READY, STATE_IDLE,
+     *                      STATE_BUFFERING, or STATE_ENDED.
+     */
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        if (simpleExoPlayer != null) {
+            if((playbackState == Player.STATE_READY) && playWhenReady){
+                stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                        simpleExoPlayer.getCurrentPosition(), 1f);
+            } else if((playbackState == Player.STATE_READY)){
+                stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                        simpleExoPlayer.getCurrentPosition(), 1f);
+            }
+            mediaSessionCompat.setPlaybackState(stateBuilder.build());
+        }
+    }
+
+    @Override
+    public void onRepeatModeChanged(int repeatMode) {
+
+    }
+
+    @Override
+    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+
+    }
+
+    @Override
+    public void onPositionDiscontinuity(int reason) {
+
+    }
+
+    @Override
+    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+    }
+
+    @Override
+    public void onSeekProcessed() {
+
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
+        mediaSessionCompat.setActive(false);
         if (simpleExoPlayer != null) {
             videoPosition = simpleExoPlayer.getContentPosition();
         }
@@ -144,6 +258,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mediaSessionCompat.setActive(true);
         initPlayer();
     }
 
@@ -159,6 +274,31 @@ public class StepDetailFragment extends Fragment {
             simpleExoPlayer.release();
             simpleExoPlayer = null;
         }
+    }
 
+    /**
+     * Media Session Callbacks, where all external clients control the player.
+     */
+    private class MySessionCallback extends MediaSessionCompat.Callback {
+        @Override
+        public void onPlay() {
+            if (simpleExoPlayer != null) {
+                simpleExoPlayer.setPlayWhenReady(true);
+            }
+        }
+
+        @Override
+        public void onPause() {
+            if (simpleExoPlayer != null) {
+                simpleExoPlayer.setPlayWhenReady(false);
+            }
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            if (simpleExoPlayer != null) {
+                simpleExoPlayer.seekTo(0);
+            }
+        }
     }
 }
