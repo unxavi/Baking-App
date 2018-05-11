@@ -197,6 +197,7 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     /**
      * Method that is called when the ExoPlayer state changes. Used to update the MediaSession
      * PlayBackState to keep in sync, and post the media notification.
+     *
      * @param playWhenReady true if ExoPlayer is playing, false if it's paused.
      * @param playbackState int describing the state of ExoPlayer. Can be STATE_READY, STATE_IDLE,
      *                      STATE_BUFFERING, or STATE_ENDED.
@@ -204,10 +205,10 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         if (simpleExoPlayer != null) {
-            if((playbackState == Player.STATE_READY) && playWhenReady){
+            if ((playbackState == Player.STATE_READY) && playWhenReady) {
                 stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                         simpleExoPlayer.getCurrentPosition(), 1f);
-            } else if((playbackState == Player.STATE_READY)){
+            } else if ((playbackState == Player.STATE_READY)) {
                 stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                         simpleExoPlayer.getCurrentPosition(), 1f);
             }
