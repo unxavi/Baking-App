@@ -1,10 +1,11 @@
-package unxavi.com.github.bakingapp;
+package unxavi.com.github.bakingapp.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.widget.RemoteViews;
 
+import unxavi.com.github.bakingapp.R;
 import unxavi.com.github.bakingapp.data.BakingPreferences;
 
 /**

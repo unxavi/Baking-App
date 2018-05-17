@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import unxavi.com.github.bakingapp.IngredientsWidgetProvider;
+import unxavi.com.github.bakingapp.widget.IngredientsWidgetProvider;
 import unxavi.com.github.bakingapp.R;
 import unxavi.com.github.bakingapp.data.BakingPreferences;
 import unxavi.com.github.bakingapp.model.Recipe;
