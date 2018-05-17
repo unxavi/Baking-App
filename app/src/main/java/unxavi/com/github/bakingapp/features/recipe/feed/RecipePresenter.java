@@ -1,6 +1,7 @@
 package unxavi.com.github.bakingapp.features.recipe.feed;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
@@ -14,13 +15,27 @@ import retrofit2.Response;
 import unxavi.com.github.bakingapp.model.Recipe;
 import unxavi.com.github.bakingapp.rest.ServiceGenerator;
 import unxavi.com.github.bakingapp.rest.service.ApiService;
+import unxavi.com.github.bakingapp.tests.SimpleIdlingResource;
 
 class RecipePresenter extends MvpBasePresenter<RecipeView> {
 
     private static final String TAG = "RecipePresenter";
     private Call<List<Recipe>> recipesCall;
+    private SimpleIdlingResource idlingResource;
 
-    public void getRecipes() {
+    public void getRecipes(@Nullable SimpleIdlingResource idlingResource) {
+        /**
+         * The IdlingResource is null in production as set by the @Nullable annotation which means
+         * the value is allowed to be null.
+         *
+         * If the idle state is true, Espresso can perform the next action.
+         * If the idle state is false, Espresso will wait until it is true before
+         * performing the next action.
+         */
+        if (idlingResource != null) {
+            idlingResource.setIdleState(false);
+        }
+
         showViewLoading();
         ApiService service = ServiceGenerator.createService(ApiService.class);
         recipesCall = service.getRecipes();
@@ -64,6 +79,7 @@ class RecipePresenter extends MvpBasePresenter<RecipeView> {
     }
 
     private void showViewLoading() {
+        setIdleResourceDone();
         ifViewAttached(new ViewAction<RecipeView>() {
             @Override
             public void run(@NonNull RecipeView view) {
@@ -73,6 +89,7 @@ class RecipePresenter extends MvpBasePresenter<RecipeView> {
     }
 
     private void showViewInternetError() {
+        setIdleResourceDone();
         ifViewAttached(new ViewAction<RecipeView>() {
             @Override
             public void run(@NonNull RecipeView view) {
@@ -82,12 +99,19 @@ class RecipePresenter extends MvpBasePresenter<RecipeView> {
     }
 
     private void showViewServerError() {
+        setIdleResourceDone();
         ifViewAttached(new ViewAction<RecipeView>() {
             @Override
             public void run(@NonNull RecipeView view) {
                 view.showServerError();
             }
         });
+    }
+
+    private void setIdleResourceDone(){
+        if (idlingResource != null) {
+            idlingResource.setIdleState(false);
+        }
     }
 
     /**
