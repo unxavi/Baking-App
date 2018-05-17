@@ -5,4 +5,6 @@
     <string name="servings">Servings</string>
     <string name="step_image_content_description">Step image</string>
     <string name="recipe_picture_content_description">Recipe picture</string>
+    <string name="appwidget_text_title">Recepi title</string>
+    <string name="add_widget">Add widget</string>
 </resources>

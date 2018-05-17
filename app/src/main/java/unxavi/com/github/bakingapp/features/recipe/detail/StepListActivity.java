@@ -1,5 +1,7 @@
 package unxavi.com.github.bakingapp.features.recipe.detail;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,7 +18,9 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import unxavi.com.github.bakingapp.IngredientsWidgetProvider;
 import unxavi.com.github.bakingapp.R;
+import unxavi.com.github.bakingapp.data.BakingPreferences;
 import unxavi.com.github.bakingapp.model.Recipe;
 import unxavi.com.github.bakingapp.model.Step;
 import unxavi.com.github.bakingapp.utils.Utility;
@@ -117,7 +121,21 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
     }
 
     private void showIngredients(Recipe recipe) {
-        ingredientsTv.setText(Utility.formatIngredients(recipe));
+        String ingredients = Utility.formatIngredients(recipe);
+        ingredientsTv.setText(ingredients);
+        saveInSharePreference(ingredients);
+    }
+
+    private void saveInSharePreference(String ingredients) {
+        BakingPreferences.setLastIngredientsPreference(this, ingredients);
+        BakingPreferences.setLastRecipeTitleOpenPreference(this, recipe.getName());
+        updateWidgets();
+    }
+
+    private void updateWidgets() {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, IngredientsWidgetProvider.class));
+        IngredientsWidgetProvider.updateWidgetFromActivity(this, appWidgetManager, appWidgetIds);
     }
 
     @Override
